@@ -1,12 +1,16 @@
 import os
 from flask import Flask, render_template, redirect, url_for, request, g
+from flask_wtf.csrf import CSRFProtect
 from pokedex import helper
 
 app = Flask(__name__)
 app.config["DATABASE"] = "../database.db"
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY") or os.urandom(32)
+csrf = CSRFProtect()
+csrf.init_app(app)
 
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def index():
     pokemon = [
         {"id": id, "pokemon_name": pokemon_name, "image_url": image_url}
